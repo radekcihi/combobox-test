@@ -1,13 +1,11 @@
 "use client"
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { getUniversities } from "../actions/form";
 import { FieldError } from "react-hook-form";
 import Input from "./Input";
-import { cn } from "../lib/utils";
 import clsx from "clsx";
-import { motion } from "framer-motion";
 
 export interface ComboBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string;
@@ -60,25 +58,22 @@ const ComboBox: React.FC<ComboBoxProps> = ({ label, error, id, className, handle
                 onDelete={() => {
                     handleInput("")
                 }}
-                onBlur={() => {
-                    setTimeout(() => {
-                        setOpen(false);
-                    }, 100);
-                }}
+
                 onClick={() => setOpen(true)}
 
             />
 
-            {!disabled && open && data ? <ul className="h-44 overflow-y-scroll ">
+            {!disabled && open && !isLoading ? <ul className="h-44 overflow-auto ">
                 {data?.map((item) => {
                     return (
-                        <li key={item.name} className={cn(
-                            clsx("h-10  w-52 rounded-md cursor-pointer border truncate border-gray-200 bg-white px-3 py-2 text-sm  placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 hover:bg-gray-200 text-nowrap overflow-ellipsis"),
-                            className
-                        )} onClick={() => {
-                            handleInput(item.name)
-                            setOpen(false)
-                        }}> {item.name}</li>
+                        <li key={item.name} onBlur={() => {
+                            setOpen(false);
+                        }} className=" h-10  w-52  rounded-md cursor-pointer border truncate border-gray-200 bg-white px-3 py-2 text-sm  placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 hover:bg-gray-200 text-nowrap overflow-ellipsis"
+                            onClick={() => {
+                                console.log(item.name)
+                                handleInput(item.name)
+                                setOpen(false)
+                            }}> {item.name}</li>
                     )
                 })}
             </ul> : null
